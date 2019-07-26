@@ -1,0 +1,24 @@
+variant: fcos
+version: 1.0.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDakZ/FwurQ5uc9vyYmLuPv/IU0TLuBT9p5xKRLXYhT5iaYHqXa3FdEjsLfAEWZ5hCtSD2L1YcOkQE98R52A3Q3Rc0ZZKE3nIv0eRJN6wExb+9alnzg4Zc3l+ZngzHRU88RPbgjGY3wjx8GxxMA8gRhAkdQ+CtyeFTPhDRBcqqMJ93D0gYBErswxiabOtxKfNb/CNx4AJSGGRgeIo2PD0Bi/vXqpvDDKM0++mPzm16aYhXCxDRD2nwyUtvWBEzwS+8aZhGMXLodzZCTQzLSEtxJtfVaRG1ZpcP1O92UIC9hjOyqTqdp3xw9AId7StjeogwVlujiCKXaxvT1V9tIZHYWlYxv5SmZQM7K23QCUtVqLC+k1kIngd+J0BGc7vXP8xaW9m5Bx6K0Dlxe2mt7Ex4V/AJTBFDWY87+vPtBx8ikxCjiphciWcoaDLQOyJ92M2DaDKQpZYWPTrp3pf6uhwsYLqX6Kw5u39ytjA7ljQdPXu3P0Js3NcD2l0q2OIk426hz3f/Ve16fb1ZXGV7SK4knUAT33MiRnR7lPw90ddHAeapWSEnhTHMPzkG4NKnAaFYNw3JqR0X1CGr7nx+KRjZYRXaq0cQFzAxBJ0c8fu8ORmW86KGhv23S/fADU1J+3VHQk5oIAvk0G5f+yiKbFr1sY1gM6AXoPdLUgowUrWv5fw== simon@krenger.ch
+systemd:
+  units:
+    - name: random-ws.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=SimonRandomWebservice
+
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/bin/podman kill random-ws
+        ExecStartPre=-/bin/podman rm random-ws
+        ExecStartPre=/bin/podman pull simonkrenger/random-webservice:latest
+        ExecStart=/bin/podman run --name random-ws -p 8080:8080 simonkrenger/random-webservice:latest
+
+        [Install]
+        WantedBy=multi-user.target
